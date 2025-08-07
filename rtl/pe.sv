@@ -3,28 +3,32 @@
 
 `default_nettype none
 
-module pe
+module pe#(
+  parameter BITWIDTH = 4,
+  parameter N = 4,
+  parameter OUTWIDTH = 8
+  )
   ( input  var logic        i_clk
   , input  var logic        i_arst
 
   , input  var logic        i_doProcess
 
-  , input  var logic [7:0]  i_a
-  , input  var logic [7:0]  i_b
+  , input  var logic [BITWIDTH -1:0]  i_a
+  , input  var logic [BITWIDTH -1:0]  i_b
 
-  , output var logic [7:0]  o_a
-  , output var logic [7:0]  o_b
-  , output var logic [31:0] o_y
+  , output var logic [BITWIDTH -1:0]  o_a
+  , output var logic [BITWIDTH -1:0]  o_b
+  , output var logic [OUTWIDTH -1:0]  o_y
   );
 
   // {{{ MAC
 
-  logic [31:0] mult;
+  logic [OUTWIDTH -1:0] mult;
 
   always_comb
     mult = i_a*i_b;
 
-  logic [31:0] mac_d, mac_q;
+  logic [OUTWIDTH -1:0] mac_d, mac_q;
 
   always_ff @(posedge i_clk, posedge i_arst)
     if (i_arst)
@@ -42,7 +46,7 @@ module pe
 
   // {{{ Register inputs and assign them to outputs
 
-  logic [7:0] a_q, b_q;
+  logic [BITWIDTH -1:0] a_q, b_q;
 
   always_ff @(posedge i_clk, posedge i_arst)
     if (i_arst)
