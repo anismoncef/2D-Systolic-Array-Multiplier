@@ -4,5 +4,6 @@
   "CLOCK_PERIOD": 25,
   "CLOCK_PORT": clk,
   "DIE_AREA": [0, 0, 450, 250],
-  "PL_TARGET_DENSITY_PCT": 90
+  "PL_TARGET_DENSITY_PCT": 85,
+  "FP_SIZING": absolute,
 }
