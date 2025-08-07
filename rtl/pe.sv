@@ -3,6 +3,8 @@
 
 `default_nettype none
 
+`ifndef PE_SV
+`define PE_SV
 module pe#(
   parameter BITWIDTH = 4,
   parameter N = 4,
@@ -73,5 +75,6 @@ module pe#(
   // }}} Register inputs and assign them to outputs
 
 endmodule
+`endif
 
 `resetall
