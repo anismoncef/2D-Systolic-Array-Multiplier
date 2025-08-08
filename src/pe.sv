@@ -1,5 +1,5 @@
 module pe #(
-    parameter BITWIDTH = 8,
+    parameter BITWIDTH = 4,
     parameter OUTWIDTH = 2*BITWIDTH
     ) (
     input                           clk,
