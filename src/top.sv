@@ -24,7 +24,7 @@ heichips25_systolicArray #(
     .OUTWIDTH(8)
 )mydesign(
     .clk(clk),
-    .reset_n(rst_n),
+    .reset(!rst_n),
     .data_in(ui_in[3:0]),
     .load_weights(ui_in[4]),
     .load_inputs(ui_in[5]),
