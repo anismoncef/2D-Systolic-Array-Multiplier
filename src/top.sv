@@ -19,12 +19,12 @@ module heichips25_template (
     // List all unused inputs to prevent warnings
     wire _unused = &{ena, ui_in[7], uio_in[7:0]};
  
-heichips25_systolicArray mydesign#(
-    parameter BITWIDTH = 4,
-    parameter OUTWIDTH = 2*BITWIDTH
-)(
+heichips25_systolicArray #(
+    .BITWIDTH(4),
+    .OUTWIDTH(8)
+)mydesign(
     .clk(clk),
-    .reset(!rst_n),
+    .reset_n(rst_n),
     .data_in(ui_in[3:0]),
     .load_weights(ui_in[4]),
     .load_inputs(ui_in[5]),
@@ -32,10 +32,6 @@ heichips25_systolicArray mydesign#(
     .results(uo_out),
     .valid_out(uio_out[0])
 );
-
-
-    
-    assign uo_out       = count;
     assign uio_out[7:1] = '0;
     assign uio_oe       = '1;
     assign uio_oe       = '1;

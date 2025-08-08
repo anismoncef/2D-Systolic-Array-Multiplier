@@ -2,11 +2,11 @@
 // Implements an output-stationary systolic array for matrix multiplication
 `include "./pe.sv"
 module heichips25_systolicArray #(
-    parameter BITWIDTH = 8,
+    parameter BITWIDTH = 4,
     parameter OUTWIDTH = 2*BITWIDTH
 )(
     input                           clk,            // System clock
-    input                           reset,          // Active-high reset
+    input                           reset_n,          // Active-high reset
     input        [BITWIDTH -1:0]    data_in,        // 4-bit input data (weights or inputs)
     input                           load_weights,   // High during weight loading phase
     input                           load_inputs,    // High during input loading phase
@@ -30,8 +30,8 @@ module heichips25_systolicArray #(
     reg [2:0]   cp2;         // Tracks computation phase
 
     // Main operation - synchronous logic
-    always @(posedge clk or posedge reset) begin
-        if (reset) begin
+    always @(posedge clk or negedge reset_n) begin
+        if (!reset_n) begin
             // Reset all registers
             for (int i=0; i<4; i++) begin
                 for (int j=0; j<7; j++) begin
@@ -139,7 +139,7 @@ module heichips25_systolicArray #(
                     .clk            (clk),
                     .compute_en     (compute_en),
                     .load_weights   (load_weights),
-                    .reset          (reset),
+                    .reset_n        (reset_n),
                     .in_data        (((j == 0)) ?   inputs[i][cp]   : pe_inputs[i][j-1] ),
                     .in_weight      ((i == 0)   ?   weights[j][cp]  : pe_weights[i-1][j]),
                     .out_data       (pe_inputs[i][j]),
