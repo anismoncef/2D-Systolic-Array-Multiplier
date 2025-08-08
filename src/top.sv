@@ -17,8 +17,11 @@ module heichips25_template (
 );
 
     // List all unused inputs to prevent warnings
-    wire _unused = &{ena, ui_in[7], uio_in[7:0]};
- 
+    wire    _unused         = &{ena, ui_in[7:5], uio_in[7:0]};
+w   ire     load_weights    ; 
+    wire    load_inputs     ; 
+    wire    store_outputs   ; 
+    wire    valid_out       ; 
 heichips25_systolicArray #(
     .BITWIDTH(4),
     .OUTWIDTH(8)
@@ -26,14 +29,53 @@ heichips25_systolicArray #(
     .clk(clk),
     .reset(!rst_n),
     .data_in(ui_in[3:0]),
-    .load_weights(ui_in[4]),
-    .load_inputs(ui_in[5]),
-    .store_outputs(ui_in[6]),
+    .load_weights(load_weights),
+    .load_inputs(load_inputs),
+    .store_outputs(store_outputs),
     .results(uo_out),
-    .valid_out(uio_out[0])
+    .valid_out(valid_out)
 );
-    assign uio_out[7:1] = '0;
-    assign uio_oe       = '1;
-    assign uio_oe       = '1;
+
+    logic [ 9:0] sram_addr;
+    logic [31:0] sram_bm;
+    logic [31:0] sram_din;
+    logic        sram_wen;
+    logic        sram_men;
+    logic        sram_ren;
+    logic [31:0] sram_dout;
+    
+    IHP_SRAM_1024x32_wrapper IHP_SRAM_1024x32_wrapper (
+        .ADDR  (sram_addr),
+        .BM    (4'b0011),
+        .DIN   (sram_din),
+        .WEN   (sram_wen),
+        .MEN   (sram_men),
+        .REN   (sram_ren),
+        .DOUT  (sram_dout)
+    );
+    
+    fsm #(
+    .ADDR_W(10)
+    ) (
+    .clk(clk),
+    .start(ui_in[4]),
+    .reset(!rst_n),
+    .load_weights(load_weights),   
+    .load_inputs(load_inputs), 
+    .store_outputs(store_outputs), 
+    .ren(uio_out[0]),
+    .wen(uio_out[1]),
+    .address_o(sram_addr), 
+    .valid_out(valid_out) 
+);
+//SRAM ASSIGNS
+    assign sram_din     = uo_out    ;
+    assign sram_wen     = uio_out[1];
+    assign sram_ren     = uio_out[0];
+    assign sram_men     = 1'b1;
+    assign ui_in[3:0]   = sram_dout ;
+//DESIGN UNUSED ASSIGNS
+    assign uio_out[7:2] = '0        ;
+    assign uio_oe       = '1        ;
 
 endmodule
