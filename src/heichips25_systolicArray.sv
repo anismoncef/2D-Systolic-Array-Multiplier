@@ -2,7 +2,7 @@
 // Implements an output-stationary systolic array for matrix multiplication
 `include "./pe.sv"
 module heichips25_systolicArray #(
-    parameter BITWIDTH = 4,
+    parameter BITWIDTH = 8,
     parameter OUTWIDTH = 2*BITWIDTH
 )(
     input                           clk,            // System clock
